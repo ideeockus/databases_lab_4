@@ -1,0 +1,90 @@
+version: "3.9"
+services:
+  postgres_1:
+    image: postgres:latest
+    container_name: postgres_1
+    environment:
+      POSTGRES_PASSWORD: "pass123"
+    volumes:
+      # - ../2. Init Database:/docker-entrypoint-initdb.d
+      - ./postgres_data_1:/var/lib/postgresql/data
+      # - ./postgresql.conf:/var/lib/postgresql/data/postgresql.conf
+    ports:
+      - "5433:5432"
+    # healthcheck:
+    #   test: ["CMD-SHELL", "pg_isready -U habrpguser -d habrdb"]
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 5
+    #   start_period: 10s
+    # restart: unless-stopped
+    restart: no
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 15M
+
+  postgres_2:
+    image: postgres:latest
+    container_name: postgres_2
+    environment:
+      POSTGRES_PASSWORD: "pass123"
+    volumes:
+      - ./postgres_data_2:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+    restart: no
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 13M
+
+  postgres_3:
+    image: postgres:latest
+    container_name: postgres_3
+    environment:
+      POSTGRES_PASSWORD: "pass123"
+    volumes:
+      - ./postgres_data_3:/var/lib/postgresql/data
+    ports:
+      - "5435:5432"
+    restart: no
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 13M
+
+
+  # prometheus:
+  #   image: prom/prometheus:latest
+  #   volumes:
+  #     - ./prometheus:/etc/prometheus/
+  #   container_name: prometheus
+  #   command:
+  #     - --config.file=/etc/prometheus/prometheus.yml
+  #   ports:
+  #     - 9090:9090
+  #   restart: unless-stopped
+
+  # node-exporter:
+  #   image: prom/node-exporter
+  #   container_name: exporter
+  #   ports:
+  #     - 9100:9100
+  #   restart: unless-stopped
+
+  # grafana:
+  #   image: grafana/grafana
+  #   user: root
+  #   depends_on:
+  #     - prometheus
+  #   ports:
+  #     - 3000:3000
+  #   volumes:
+  #     - ./grafana:/var/lib/grafana
+  #     - ./grafana/provisioning/:/etc/grafana/provisioning/
+  #   container_name: grafana
+  #   restart: unless-stopped
